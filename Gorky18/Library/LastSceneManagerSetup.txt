@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/UltimateIsometricToolkit/Scenes/SimpleIsoObjectController_Example.unity
+- path: Assets/IsoTools/Examples/Scenes/Scene00.unity
   isLoaded: 1
   isActive: 1
