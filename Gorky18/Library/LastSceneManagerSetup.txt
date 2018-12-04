@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/IsoTools/Examples/Scenes/Scene00.unity
+- path: Assets/Scenes/MovementScene.unity
   isLoaded: 1
   isActive: 1
