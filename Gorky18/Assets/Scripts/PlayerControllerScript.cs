@@ -32,13 +32,13 @@ public class PlayerControllerScript : MonoBehaviour
     if (Input.GetMouseButtonDown(0)) {
 			Vector3 mousePosition = world.MouseIsoTilePosition();
       BaseTile baseTile = GetTileAtPosition(mousePosition);
+      Vector3 playerPosition = isoObject.position;
 
       print("BaseTile: " + baseTile);
-      if (baseTile == null || baseTile.isCollider) {
+      if (baseTile == null || baseTile.isCollider || Vector2.Distance(playerPosition, mousePosition) > sightDistance) {
         return;
       }
 
-			Vector3 playerPosition = isoObject.position;
 			target = new Vector3(mousePosition.x - 0.427f, mousePosition.y, playerPosition.z);
 		}
 
