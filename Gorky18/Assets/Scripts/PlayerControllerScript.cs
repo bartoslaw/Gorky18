@@ -12,12 +12,16 @@ public class PlayerControllerScript : MonoBehaviour
   IsoWorld world;
   IsoObject isoObject;
   GameObject[] floor;
+  
+  Vector3 target;
+  float speed = 2.0f;
   // Use this for initialization
   void Start()
   {
     world = IsoWorld.GetWorld(0);
     floor = GameObject.FindGameObjectsWithTag("Floor");
     isoObject = GetComponent<IsoObject>();
+    target = Vector3.zero;
     
 		AdjustMovableTiles();
   }
@@ -35,17 +39,23 @@ public class PlayerControllerScript : MonoBehaviour
       }
 
 			Vector3 playerPosition = isoObject.position;
-			Vector3 newPosition = new Vector3(mousePosition.x - 0.427f, mousePosition.y, playerPosition.z);
-
-			isoObject.position = newPosition;
-      AdjustMovableTiles();
+			target = new Vector3(mousePosition.x - 0.427f, mousePosition.y, playerPosition.z);
 		}
+
+    if (target != Vector3.zero) {
+      float step = speed * Time.deltaTime;
+      isoObject.position = Vector3.MoveTowards(isoObject.position, target, step);
+
+      if (Vector2.Distance(isoObject.position, target) == 0) {
+        target = Vector3.zero;
+        AdjustMovableTiles();
+      }
+    }
   }
 
   public void AdjustMovableTiles()
   {
     Vector2 positionXY = GetComponent<IsoObject>().tilePositionXY;
-		print ("Position: " + positionXY);
     foreach (GameObject item in floor)
     {
       IsoObject isoObject = item.GetComponent<IsoObject>();
@@ -68,7 +78,7 @@ public class PlayerControllerScript : MonoBehaviour
     foreach (GameObject item in floor)
     {
         IsoObject isoObject = item.GetComponent<IsoObject>();
-        print ("Distance: " + Vector2.Distance(isoObject.positionXY, position));
+        print ("Distance: " + item + (int) Vector2.Distance(isoObject.positionXY, position));
         if ((int) Vector2.Distance(isoObject.positionXY, position) == 0) {
           return item.GetComponent<BaseTile>();
         }
