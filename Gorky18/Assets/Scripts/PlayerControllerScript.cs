@@ -32,10 +32,13 @@ public class PlayerControllerScript : MonoBehaviour
     if (Input.GetMouseButtonDown(0)) {
 			Vector3 mousePosition = world.MouseIsoTilePosition();
       BaseTile baseTile = GetTileAtPosition(mousePosition);
-      Vector3 playerPosition = isoObject.position;
 
-      print("BaseTile: " + baseTile);
-      if (baseTile == null || baseTile.isCollider || Vector2.Distance(playerPosition, mousePosition) > sightDistance) {
+      Vector3 tilePosition = baseTile.GetComponent<IsoObject>().tilePositionXY;
+      Vector3 playerPosition = isoObject.tilePositionXY;
+
+      if (baseTile == null || baseTile.isCollider || !IsNextToPlayer(tilePosition, playerPosition)) {
+        print(baseTile.isCollider);
+        print(Vector2.Distance(playerPosition, mousePosition));
         return;
       }
 
@@ -78,7 +81,7 @@ public class PlayerControllerScript : MonoBehaviour
     foreach (GameObject item in floor)
     {
         IsoObject isoObject = item.GetComponent<IsoObject>();
-        print ("Distance: " + item + (int) Vector2.Distance(isoObject.positionXY, position));
+        // print ("Distance: " + item + (int) Vector2.Distance(isoObject.positionXY, position));
         if ((int) Vector2.Distance(isoObject.positionXY, position) == 0) {
           return item.GetComponent<BaseTile>();
         }
