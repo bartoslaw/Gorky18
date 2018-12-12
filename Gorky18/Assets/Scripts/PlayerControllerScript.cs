@@ -30,7 +30,7 @@ public class PlayerControllerScript : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
-    UpdateSelectableTile();
+    // UpdateSelectableTile();
     HandleMouseClick();
     HandleMovement();
   }
