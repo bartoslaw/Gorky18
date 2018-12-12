@@ -27,21 +27,6 @@ public class PlayerControllerScript : MonoBehaviour
     AdjustMovableTiles();
   }
 
-  public void OnPathComplete(Path p)
-  {
-    if (p.error)
-    {
-      print(p.error);
-    }
-    else
-    {
-      print("Calculated path: " + p.vectorPath.Count);
-      foreach (Vector3 point in p.vectorPath) 
-      {
-          path.Add(world.ScreenToIso(new Vector2(point.x - 0.427f, point.y)));
-      }
-    }
-  }
   // Update is called once per frame
   void Update()
   {
@@ -50,10 +35,33 @@ public class PlayerControllerScript : MonoBehaviour
     HandleMovement();
   }
 
-  private void UpdateSelectableTile() {
+  private void UpdateSelectableTile()
+  {
+    Vector3 mousePosition = world.MouseIsoTilePosition();
+    BaseTile selectedTile = GetTileAtPosition(mousePosition);
 
+    foreach (GameObject item in floor)
+    {
+      BaseTile tile = item.GetComponent<BaseTile>();
+      SpriteRenderer renderer = item.GetComponent<SpriteRenderer>();
+      IsoObject tileObject = item.GetComponent<IsoObject>();
+
+      if (renderer != null)
+      {
+        Color tempColor = renderer.color;
+
+        if (!tile.isCollider)
+        {
+          tempColor.a = selectedTile == tile ? 0.1f : IsNextToPlayer(tileObject.positionXY, isoObject.positionXY) ? 0.5f : 1.0f;
+        }
+
+        renderer.color = tempColor;
+      }
+    }
   }
-  private void HandleMouseClick() {
+
+  private void HandleMouseClick()
+  {
     if (Input.GetMouseButtonDown(0))
     {
       Vector3 mousePosition = world.MouseIsoTilePosition();
@@ -69,13 +77,29 @@ public class PlayerControllerScript : MonoBehaviour
         return;
       }
 
-      // target = new Vector3(mousePosition.x - 0.427f, mousePosition.y, playerPosition.z);
       path.Clear();
-      seeker.StartPath (transform.position, baseTile.transform.position, OnPathComplete);
+      seeker.StartPath(transform.position, baseTile.transform.position, OnPathComplete);
     }
   }
 
-  private void HandleMovement() {
+  public void OnPathComplete(Path p)
+  {
+    if (p.error)
+    {
+      print(p.error);
+    }
+    else
+    {
+      print("Calculated path: " + p.vectorPath.Count);
+      foreach (Vector3 point in p.vectorPath)
+      {
+        path.Add(world.ScreenToIso(new Vector2(point.x - 0.427f, point.y)));
+      }
+    }
+  }
+
+  private void HandleMovement()
+  {
     if (path.Count != 0)
     {
       Vector3 target = path[0];
@@ -86,7 +110,8 @@ public class PlayerControllerScript : MonoBehaviour
       {
         path.RemoveAt(0);
 
-        if (path.Count == 0) {
+        if (path.Count == 0)
+        {
           AdjustMovableTiles();
         }
       }
