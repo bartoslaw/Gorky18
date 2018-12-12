@@ -74,7 +74,10 @@ public class PlayerControllerScript : MonoBehaviour
       if (Vector2.Distance(isoObject.position, target) == 0)
       {
         path.RemoveAt(0);
-        AdjustMovableTiles();
+
+        if (path.Count == 0) {
+          AdjustMovableTiles();
+        }
       }
     }
   }
