@@ -11,7 +11,7 @@ public class PlayerControllerScript : MonoBehaviour
   IsoWorld world;
   IsoObject isoObject;
   GameObject[] floor;
-  Vector3 target;
+  List<Vector3> path;
   Seeker seeker;
   float speed = 2.0f;
   // Use this for initialization
@@ -22,7 +22,7 @@ public class PlayerControllerScript : MonoBehaviour
     isoObject = GetComponent<IsoObject>();
     seeker = GetComponent<Seeker>();
 
-    target = Vector3.zero;
+    path = new List<Vector3>();
 
     AdjustMovableTiles();
   }
@@ -35,13 +35,16 @@ public class PlayerControllerScript : MonoBehaviour
     }
     else
     {
-      print(p.vectorPath.Count);
+      print("Calculated path: " + p.vectorPath.Count);
+      foreach (Vector3 point in p.vectorPath) 
+      {
+          path.Add(world.ScreenToIso(new Vector2(point.x - 0.427f, point.y)));
+      }
     }
   }
   // Update is called once per frame
   void Update()
   {
-
     if (Input.GetMouseButtonDown(0))
     {
       Vector3 mousePosition = world.MouseIsoTilePosition();
@@ -57,17 +60,20 @@ public class PlayerControllerScript : MonoBehaviour
         return;
       }
 
-      target = new Vector3(mousePosition.x - 0.427f, mousePosition.y, playerPosition.z);
+      // target = new Vector3(mousePosition.x - 0.427f, mousePosition.y, playerPosition.z);
+      path.Clear();
       seeker.StartPath (transform.position, baseTile.transform.position, OnPathComplete);
     }
 
-    if (target != Vector3.zero)
+    if (path.Count != 0)
     {
+      Vector3 target = path[0];
+
       float step = speed * Time.deltaTime;
       isoObject.position = Vector3.MoveTowards(isoObject.position, target, step);
       if (Vector2.Distance(isoObject.position, target) == 0)
       {
-        target = Vector3.zero;
+        path.RemoveAt(0);
         AdjustMovableTiles();
       }
     }
