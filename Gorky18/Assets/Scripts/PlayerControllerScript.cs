@@ -45,6 +45,15 @@ public class PlayerControllerScript : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
+    UpdateSelectableTile();
+    HandleMouseClick();
+    HandleMovement();
+  }
+
+  private void UpdateSelectableTile() {
+
+  }
+  private void HandleMouseClick() {
     if (Input.GetMouseButtonDown(0))
     {
       Vector3 mousePosition = world.MouseIsoTilePosition();
@@ -64,7 +73,9 @@ public class PlayerControllerScript : MonoBehaviour
       path.Clear();
       seeker.StartPath (transform.position, baseTile.transform.position, OnPathComplete);
     }
+  }
 
+  private void HandleMovement() {
     if (path.Count != 0)
     {
       Vector3 target = path[0];
