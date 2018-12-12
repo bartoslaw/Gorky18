@@ -29,7 +29,6 @@ public class PlayerControllerScript : MonoBehaviour
 
   public void OnPathComplete(Path p)
   {
-    print("PIZDA SRANIE");
     if (p.error)
     {
       print(p.error);
