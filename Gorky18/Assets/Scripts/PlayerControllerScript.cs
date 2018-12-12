@@ -14,6 +14,8 @@ public class PlayerControllerScript : MonoBehaviour
   List<Vector3> path;
   Seeker seeker;
   float speed = 2.0f;
+  bool isMoving = false;
+  bool isAdjustingTiles = false;
   // Use this for initialization
   void Start()
   {
@@ -30,13 +32,19 @@ public class PlayerControllerScript : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
-    // UpdateSelectableTile();
-    HandleMouseClick();
+    if (!isMoving) {
+      HandleMouseClick();
+      UpdateSelectableTile();
+    }
     HandleMovement();
   }
 
   private void UpdateSelectableTile()
   {
+    if (isAdjustingTiles) {
+      return;
+    }
+
     Vector3 mousePosition = world.MouseIsoTilePosition();
     BaseTile selectedTile = GetTileAtPosition(mousePosition);
 
@@ -102,6 +110,7 @@ public class PlayerControllerScript : MonoBehaviour
   {
     if (path.Count != 0)
     {
+      isMoving = true;
       Vector3 target = path[0];
 
       float step = speed * Time.deltaTime;
@@ -113,6 +122,7 @@ public class PlayerControllerScript : MonoBehaviour
         if (path.Count == 0)
         {
           AdjustMovableTiles();
+          isMoving = false;
         }
       }
     }
@@ -120,6 +130,7 @@ public class PlayerControllerScript : MonoBehaviour
 
   public void AdjustMovableTiles()
   {
+    isAdjustingTiles = true;
     Vector2 positionXY = GetComponent<IsoObject>().tilePositionXY;
     foreach (GameObject item in floor)
     {
@@ -138,6 +149,8 @@ public class PlayerControllerScript : MonoBehaviour
         renderer.color = tempColor;
       }
     }
+
+    isAdjustingTiles = false;
   }
 
   public BaseTile GetTileAtPosition(Vector2 position)
@@ -145,7 +158,6 @@ public class PlayerControllerScript : MonoBehaviour
     foreach (GameObject item in floor)
     {
       IsoObject isoObject = item.GetComponent<IsoObject>();
-      // print ("Distance: " + item + (int) Vector2.Distance(isoObject.positionXY, position));
       if ((int)Vector2.Distance(isoObject.positionXY, position) == 0)
       {
         return item.GetComponent<BaseTile>();
