@@ -156,12 +156,13 @@ public class PlayerControllerScript : MonoBehaviour
   public BaseTile GetTileAtPosition(Vector2 position)
   {
     BaseTile tile = null;
-    float closestDistance = 500.0f;
+    float closestDistance = -1.0f;
     foreach (GameObject item in floor)
     {
       IsoObject isoObject = item.GetComponent<IsoObject>();
       float currentDistance = Vector2.Distance(isoObject.positionXY, position);
-      if (currentDistance < closestDistance) {
+      
+      if (closestDistance == -1.0f || currentDistance < closestDistance) {
         tile = isoObject.GetComponent<BaseTile>();
         closestDistance = currentDistance; 
       }
