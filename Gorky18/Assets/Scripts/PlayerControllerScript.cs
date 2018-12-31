@@ -7,7 +7,7 @@ using Pathfinding;
 
 public class PlayerControllerScript : MonoBehaviour
 {
-  public int sightDistance = 1;
+  public float sightDistance = 1.0f;
   IsoWorld world;
   IsoObject isoObject;
   GameObject[] floor;
@@ -32,11 +32,12 @@ public class PlayerControllerScript : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
+    HandleMovement();
+
     if (!isMoving) {
       HandleMouseClick();
       UpdateSelectableTile();
     }
-    HandleMovement();
   }
 
   private void UpdateSelectableTile()
@@ -119,7 +120,7 @@ public class PlayerControllerScript : MonoBehaviour
       {
         path.RemoveAt(0);
 
-        if (path.Count == 0)
+        if (path.Count == 0 && isoObject.position == target)
         {
           AdjustMovableTiles();
           isMoving = false;
@@ -132,6 +133,7 @@ public class PlayerControllerScript : MonoBehaviour
   {
     isAdjustingTiles = true;
     Vector2 positionXY = GetComponent<IsoObject>().tilePositionXY;
+    int counter = 0;
     foreach (GameObject item in floor)
     {
       IsoObject isoObject = item.GetComponent<IsoObject>();
@@ -144,7 +146,12 @@ public class PlayerControllerScript : MonoBehaviour
 
         if (!baseTile.isCollider)
         {
-          tempColor.a = IsNextToPlayer(isoObject.tilePositionXY, positionXY) ? 0.5f : 1.0f;
+          bool isNextToPlayer = IsNextToPlayer(isoObject.tilePositionXY, positionXY);
+          tempColor.a = isNextToPlayer ? 0.5f : 1.0f;
+
+          if (isNextToPlayer) {
+            counter++;
+          }
         }
         renderer.color = tempColor;
       }
@@ -173,6 +180,6 @@ public class PlayerControllerScript : MonoBehaviour
 
   bool IsNextToPlayer(Vector2 tilePosition, Vector2 position)
   {
-    return Vector2.Distance(tilePosition, position) < sightDistance; ;
+    return Vector2.Distance(tilePosition, position) < sightDistance;
   }
 }
