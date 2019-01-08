@@ -5,25 +5,16 @@ using IsoTools;
 using IsoTools.Physics;
 using Pathfinding;
 
-public class PlayerControllerScript : MonoBehaviour
+public class PlayerControllerScript : BaseIsoMovingController
 {
-  public float sightDistance = 1.0f;
-  IsoWorld world;
-  IsoObject isoObject;
-  GameObject[] floor;
   List<Vector3> path;
   Seeker seeker;
-  float speed = 2.0f;
-  bool isMoving = false;
   bool isAdjustingTiles = false;
   // Use this for initialization
   void Start()
   {
-    world = IsoWorld.GetWorld(0);
-    floor = GameObject.FindGameObjectsWithTag("Floor");
-    isoObject = GetComponent<IsoObject>();
+    base.Start();
     seeker = GetComponent<Seeker>();
-
     path = new List<Vector3>();
 
     AdjustMovableTiles();
@@ -34,7 +25,8 @@ public class PlayerControllerScript : MonoBehaviour
   {
     HandleMovement();
 
-    if (!isMoving) {
+    if (!isMoving)
+    {
       HandleMouseClick();
       UpdateSelectableTile();
     }
@@ -42,7 +34,8 @@ public class PlayerControllerScript : MonoBehaviour
 
   private void UpdateSelectableTile()
   {
-    if (isAdjustingTiles) {
+    if (isAdjustingTiles)
+    {
       return;
     }
 
@@ -149,7 +142,8 @@ public class PlayerControllerScript : MonoBehaviour
           bool isNextToPlayer = IsNextToPlayer(isoObject.tilePositionXY, positionXY);
           tempColor.a = isNextToPlayer ? 0.5f : 1.0f;
 
-          if (isNextToPlayer) {
+          if (isNextToPlayer)
+          {
             counter++;
           }
         }
@@ -168,10 +162,11 @@ public class PlayerControllerScript : MonoBehaviour
     {
       IsoObject isoObject = item.GetComponent<IsoObject>();
       float currentDistance = Vector2.Distance(isoObject.positionXY, position);
-      
-      if (closestDistance == -1.0f || currentDistance < closestDistance) {
+
+      if (closestDistance == -1.0f || currentDistance < closestDistance)
+      {
         tile = isoObject.GetComponent<BaseTile>();
-        closestDistance = currentDistance; 
+        closestDistance = currentDistance;
       }
     }
 
