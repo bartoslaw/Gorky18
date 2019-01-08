@@ -61,7 +61,7 @@ public class PlayerControllerScript : MonoBehaviour
 
         if (!tile.isCollider)
         {
-          tempColor.a = selectedTile == tile ? 0.1f : IsNextToPlayer(tileObject.positionXY, isoObject.positionXY) ? 0.5f : 1.0f;
+          tempColor.a = selectedTile == tile ? 0.1f : IsNextToPlayer(tileObject.tilePositionXY, isoObject.tilePositionXY) ? 0.5f : 1.0f;
         }
 
         renderer.color = tempColor;
