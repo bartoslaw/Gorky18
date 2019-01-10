@@ -3,24 +3,39 @@ using System.Collections.Generic;
 using IsoTools;
 using IsoTools.Physics;
 using UnityEngine;
-
+using Pathfinding;
 public class MobControllerScript : BaseIsoMovingController
 {
+  BaseTile randomizedTile;
 
-  // Use this for initialization
   void Start()
   {
     base.Start();
+    RandomizeNewTile();
   }
 
-  // Update is called once per frame
+  override public float GetPositionOffset() {
+    return 0.0f;
+  }
+
+  override public void CustomLogicOnMovementComplete() {
+    RandomizeNewTile();
+  }
+
+  private void RandomizeNewTile() {
+    while (true) {
+      randomizedTile = floor[Random.Range(0, floor.Length - 1)].GetComponent<BaseTile>();
+      if (!randomizedTile.isCollider) {
+        break;
+      }
+    }
+
+    path.Clear();
+    seeker.StartPath(transform.position, randomizedTile.transform.position, OnPathComplete);
+  }
+
   void Update()
   {
-		if (Vector2.Distance(isoObject.positionXY, floor[5].GetComponent<IsoObject>().positionXY) <= 0.1) {
-			return;
-		}
-
-    float step = speed * Time.deltaTime;
-    isoObject.position = Vector3.MoveTowards(isoObject.position, floor[5].GetComponent<IsoObject>().positionXY, step);
+    HandleMovement();
   }
 }

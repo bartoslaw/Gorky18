@@ -7,16 +7,11 @@ using Pathfinding;
 
 public class PlayerControllerScript : BaseIsoMovingController
 {
-  List<Vector3> path;
-  Seeker seeker;
   bool isAdjustingTiles = false;
   // Use this for initialization
   void Start()
   {
     base.Start();
-    seeker = GetComponent<Seeker>();
-    path = new List<Vector3>();
-
     AdjustMovableTiles();
   }
 
@@ -83,43 +78,12 @@ public class PlayerControllerScript : BaseIsoMovingController
       seeker.StartPath(transform.position, baseTile.transform.position, OnPathComplete);
     }
   }
-
-  public void OnPathComplete(Path p)
-  {
-    if (p.error)
-    {
-      print(p.error);
-    }
-    else
-    {
-      print("Calculated path: " + p.vectorPath.Count);
-      foreach (Vector3 point in p.vectorPath)
-      {
-        path.Add(world.ScreenToIso(new Vector2(point.x - 0.427f, point.y)));
-      }
-    }
+  override public float GetPositionOffset() {
+    return 0.427f;
   }
 
-  private void HandleMovement()
-  {
-    if (path.Count != 0)
-    {
-      isMoving = true;
-      Vector3 target = path[0];
-
-      float step = speed * Time.deltaTime;
-      isoObject.position = Vector3.MoveTowards(isoObject.position, target, step);
-      if (Vector2.Distance(isoObject.position, target) == 0)
-      {
-        path.RemoveAt(0);
-
-        if (path.Count == 0 && isoObject.position == target)
-        {
-          AdjustMovableTiles();
-          isMoving = false;
-        }
-      }
-    }
+  override public void CustomLogicOnMovementComplete() {
+    AdjustMovableTiles();
   }
 
   public void AdjustMovableTiles()
