@@ -8,10 +8,10 @@ public class MobControllerScript : BaseIsoMovingController
 {
   BaseTile randomizedTile;
 
-  void Start()
+  new void Start()
   {
     base.Start();
-    RandomizeNewTile();
+    StartCoroutine(RandomizeNewTile());
   }
 
   override public float GetPositionOffset() {
@@ -19,18 +19,20 @@ public class MobControllerScript : BaseIsoMovingController
   }
 
   override public void CustomLogicOnMovementComplete() {
-    RandomizeNewTile();
+    StartCoroutine(RandomizeNewTile());
   }
 
-  private void RandomizeNewTile() {
+  IEnumerator RandomizeNewTile() {
+    Vector2 positionXY = GetComponent<IsoObject>().tilePositionXY;
     while (true) {
       randomizedTile = floor[Random.Range(0, floor.Length - 1)].GetComponent<BaseTile>();
-      if (!randomizedTile.isCollider) {
+      if (!randomizedTile.isCollider && IsInSight(randomizedTile.GetComponent<IsoObject>().tilePositionXY, positionXY)) {
         break;
       }
     }
 
     path.Clear();
+    yield return new WaitForSeconds(2);
     seeker.StartPath(transform.position, randomizedTile.transform.position, OnPathComplete);
   }
 

@@ -8,8 +8,9 @@ using Pathfinding;
 public class PlayerControllerScript : BaseIsoMovingController
 {
   bool isAdjustingTiles = false;
+
   // Use this for initialization
-  void Start()
+  new void Start()
   {
     base.Start();
     AdjustMovableTiles();
@@ -49,7 +50,7 @@ public class PlayerControllerScript : BaseIsoMovingController
 
         if (!tile.isCollider)
         {
-          tempColor.a = selectedTile == tile ? 0.1f : IsNextToPlayer(tileObject.tilePositionXY, isoObject.tilePositionXY) ? 0.5f : 1.0f;
+          tempColor.a = selectedTile == tile ? 0.1f : IsInSight(tileObject.tilePositionXY, isoObject.tilePositionXY) ? 0.5f : 1.0f;
         }
 
         renderer.color = tempColor;
@@ -67,7 +68,7 @@ public class PlayerControllerScript : BaseIsoMovingController
       Vector3 tilePosition = baseTile.GetComponent<IsoObject>().tilePositionXY;
       Vector3 playerPosition = isoObject.tilePositionXY;
 
-      if (baseTile == null || baseTile.isCollider || !IsNextToPlayer(tilePosition, playerPosition))
+      if (baseTile == null || baseTile.isCollider || !IsInSight(tilePosition, playerPosition))
       {
         print(baseTile.isCollider);
         print(Vector2.Distance(playerPosition, mousePosition));
@@ -103,7 +104,7 @@ public class PlayerControllerScript : BaseIsoMovingController
 
         if (!baseTile.isCollider)
         {
-          bool isNextToPlayer = IsNextToPlayer(isoObject.tilePositionXY, positionXY);
+          bool isNextToPlayer = IsInSight(isoObject.tilePositionXY, positionXY);
           tempColor.a = isNextToPlayer ? 0.5f : 1.0f;
 
           if (isNextToPlayer)
@@ -135,10 +136,5 @@ public class PlayerControllerScript : BaseIsoMovingController
     }
 
     return tile;
-  }
-
-  bool IsNextToPlayer(Vector2 tilePosition, Vector2 position)
-  {
-    return Vector2.Distance(tilePosition, position) < sightDistance;
   }
 }

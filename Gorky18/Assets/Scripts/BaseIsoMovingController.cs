@@ -49,6 +49,11 @@ abstract public class BaseIsoMovingController : MonoBehaviour
     }
   }
 
+  protected bool IsInSight(Vector2 tilePosition, Vector2 position)
+  {
+    return Vector2.Distance(tilePosition, position) < sightDistance;
+  }
+
   public void OnPathComplete(Path p)
   {
     if (p.error)
