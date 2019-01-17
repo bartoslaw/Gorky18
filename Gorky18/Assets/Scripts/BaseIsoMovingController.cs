@@ -15,7 +15,6 @@ abstract public class BaseIsoMovingController : MonoBehaviour
   protected bool isMoving = false;
   protected Seeker seeker;
   protected List<Vector3> path;
-
   abstract public float GetPositionOffset();
   abstract public void CustomLogicOnMovementComplete();
   public void Start()

@@ -8,9 +8,8 @@ using Pathfinding;
 public class PlayerControllerScript : BaseIsoMovingController
 {
   bool isAdjustingTiles = false;
-
   // Use this for initialization
-  new void Start()
+  void Start()
   {
     base.Start();
     AdjustMovableTiles();
@@ -107,6 +106,8 @@ public class PlayerControllerScript : BaseIsoMovingController
           bool isNextToPlayer = IsInSight(isoObject.tilePositionXY, positionXY);
           tempColor.a = isNextToPlayer ? 0.5f : 1.0f;
 
+          isoObject.gameObject.layer = isNextToPlayer ? 0 : 8; //0 = Default; 8 = Elements
+          
           if (isNextToPlayer)
           {
             counter++;
@@ -117,6 +118,11 @@ public class PlayerControllerScript : BaseIsoMovingController
     }
 
     isAdjustingTiles = false;
+    GameObject aStar = GameObject.FindGameObjectWithTag("AStar");
+    if (aStar != null) {
+      print("It's alright?");
+      aStar.GetComponent<AstarPath>().Scan();
+    }
   }
 
   public BaseTile GetTileAtPosition(Vector2 position)

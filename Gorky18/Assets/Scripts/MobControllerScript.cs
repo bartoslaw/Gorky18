@@ -7,7 +7,7 @@ using Pathfinding;
 public class MobControllerScript : BaseIsoMovingController
 {
   BaseTile randomizedTile;
-
+  
   new void Start()
   {
     base.Start();
